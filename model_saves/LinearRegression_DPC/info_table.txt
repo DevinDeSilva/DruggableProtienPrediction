@@ -1,0 +1,7 @@
+                precision     recall   f1-score rel. freq. abs. freq.|	 biggest thieves
+
+Not Druggable       0.878      0.805      0.840      0.519       1319|	 Druggable: 0.195,	
+    Druggable       0.807      0.879      0.841      0.481       1223|	 Not Druggable: 0.121,	
+
+----------------------------------------------------------------------------------------------------
+  avg / total       0.844      0.841      0.841        1.0       2542|	      
