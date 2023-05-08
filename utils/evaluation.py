@@ -13,6 +13,8 @@ from tabulate import tabulate
 import math
 import logging
 from datetime import datetime
+import json
+import os
 
 def plot_confusion_matrix(ConfMat, label_strings=None, title='Confusion matrix', cmap=plt.cm.get_cmap('Blues')):
     """Plot confusion matrix in a separate window"""
@@ -94,7 +96,7 @@ def generate_classification_report(existing_class_names, precision, recall, f1, 
     return report
 
 
-def action_evaluator(y_pred, y_true, class_names, excluded_classes=None, maxcharlength=35, print_report=True, show_plot=True):
+def action_evaluator(y_pred, y_true, class_names, excluded_classes=None, maxcharlength=35, print_report=True, show_plot=True, save_outputs=None):
     """
     For an array of label predictions and the respective true labels, shows confusion matrix, accuracy, recall, precision etc:
     Input:
@@ -125,6 +127,7 @@ def action_evaluator(y_pred, y_true, class_names, excluded_classes=None, maxchar
         plt.figure()
         plot_confusion_matrix(ConfMatrix_normalized_row, label_strings=existing_class_names,
                                 title='Confusion matrix normalized by row')
+        plt.savefig(os.path.join(save_outputs,"confusion_matrix.png"),dpi=300)
         plt.show(block=False)
 
     # Analyze results
@@ -136,6 +139,10 @@ def action_evaluator(y_pred, y_true, class_names, excluded_classes=None, maxchar
     # Print report
     if print_report:
         print(generate_classification_report(existing_class_names, precision, recall, f1, support, ConfMatrix_normalized_row))
+        
+    if save_outputs:
+        with open(os.path.join(save_outputs,"info_table.txt"),"w") as f0:
+            f0.write(generate_classification_report(existing_class_names, precision, recall, f1, support, ConfMatrix_normalized_row))
 
     # Calculate average precision and recall
     # prec_avg, rec_avg = get_avg_prec_recall(ConfMatrix, existing_class_names, excluded_classes)
@@ -149,5 +156,16 @@ def action_evaluator(y_pred, y_true, class_names, excluded_classes=None, maxchar
 
     # Make a histogram with the distribution of classes with respect to precision and recall
     # prec_rec_histogram(precision, recall)
+
+    if save_outputs:
+        with open(os.path.join(save_outputs,"metrics.json"),"w") as f0:
+            json.dump(
+                {"accuracy": total_accuracy, 
+                 "precision": precision.mean(), 
+                 "recall": recall.mean(), 
+                 "f1": f1.mean(),"sensitivity":recall[1],
+                 "specificity":recall[0]
+                 },f0)
+    
 
     return {"accuracy": total_accuracy, "precision": precision.mean(), "recall": recall.mean(), "f1": f1.mean(),"sensitivity":recall[1],"specificity":recall[0]}
