@@ -1,1 +1,1 @@
-{"n_estimators": 230, "max_depth": 49, "criterion": "log_loss"}
+{"n_estimators": 164, "max_depth": 24, "criterion": "gini"}
