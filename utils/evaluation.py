@@ -127,7 +127,8 @@ def action_evaluator(y_pred, y_true, class_names, excluded_classes=None, maxchar
         plt.figure()
         plot_confusion_matrix(ConfMatrix_normalized_row, label_strings=existing_class_names,
                                 title='Confusion matrix normalized by row')
-        plt.savefig(os.path.join(save_outputs,"confusion_matrix.png"),dpi=300)
+        if save_outputs:
+            plt.savefig(os.path.join(save_outputs,"confusion_matrix.png"),dpi=300)
         plt.show(block=False)
 
     # Analyze results

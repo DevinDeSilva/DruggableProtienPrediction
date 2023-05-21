@@ -3,6 +3,7 @@ from utils.evaluation import action_evaluator
 import numpy as np
 import sys
 import os
+import pandas as pd
 from sklearn.pipeline import make_pipeline
 from sklearn.utils import shuffle
 from sklearn.preprocessing import StandardScaler
@@ -98,44 +99,47 @@ print("\n\nTesting Data ...")
 test_data = SpiderDataGenerator(pos_data_file=config["test_pos_loc"],neg_data_file=config["test_neg_loc"])
 
 
-sel_model = {
-    "AAC":"SVC",
-    "DPC":"SVC",
-    "CTD":"LGBMClassifier",
-    "PAAC":"RandomForest",
-    "APAAC":"SVC",
-    "RSacid":"SVC",
-    "RSpolar":"SVC",
-    "RSsecond":"SVC",
-    "RScharge":"SVC",
-    "RSDHP":"SVC",
-    "Combine":"LGBMClassifier",
-}
+X_train,y_train = train_data.get_combination_feature(["DPC","RSDHP","RSacid","RSpolar","RSsecond","RScharge"]),train_data.targets
+X_test,y_test = test_data.get_combination_feature(["DPC","RSDHP","RSacid","RSpolar","RSsecond","RScharge"]),test_data.targets
 
-X_test = {
-    "AAC":test_data.feat_AAC,
-    "DPC":test_data.feat_DPC,
-    "CTD":test_data.feat_CTD,
-    "PAAC":test_data.feat_PAAC,
-    "APAAC":test_data.feat_APAAC,
-    "RSacid":test_data.feat_RSacid,
-    "RSpolar":test_data.feat_RSpolar,
-    "RSsecond":test_data.feat_RSsecond,
-    "RScharge":test_data.feat_RScharge,
-    "RSDHP":test_data.feat_RSDHP,
-}
+print(f'Model :- SVC, Features Used :- "DPC","RSDHP","RSacid","RSpolar","RSsecond","RScharge"')
+print("Training Stage with 5 fold cross validation")
 
-X_train = {
-    "AAC":train_data.feat_AAC,
-    "DPC":train_data.feat_DPC,
-    "CTD":train_data.feat_CTD,
-    "PAAC":train_data.feat_PAAC,
-    "APAAC":train_data.feat_APAAC,
-    "RSacid":train_data.feat_RSacid,
-    "RSpolar":train_data.feat_RSpolar,
-    "RSsecond":train_data.feat_RSsecond,
-    "RScharge":train_data.feat_RScharge,
-    "RSDHP":train_data.feat_RSDHP,
-}
+#train
+X,y = shuffle(X_train,y_train,random_state=config["random_seed"])
 
-feat_combinations = ["DPC_RSDHP_RSacid_RSpolar_RSsecond_RScharge"]
+scaler = StandardScaler()
+scaler.fit(X,y)
+X = scaler.transform(X)
+
+clf = SVC()
+y_pred = cross_val_predict(clf, X, y, cv=5)
+
+result_values = action_evaluator(y_pred,y,class_names=["Not Druggable","Druggable"],show_plot=False,save_outputs=None)
+
+clf.fit(X,y)
+
+print("Validation results: - ",result_values)
+print("\n\nTest Stage")
+#test
+X,y = shuffle(X_test,y_test,random_state=config["random_seed"])
+X = scaler.transform(X)
+
+
+y_pred = clf.predict(X)
+
+result_values = action_evaluator(y_pred,y,class_names=["Not Druggable","Druggable"],show_plot=False,save_outputs=None)
+print("Test results: - ",result_values)
+
+#output test results
+pos_outputs = [f">{data_point[0]}\n{int(prediction)}" for data_point,prediction in zip(test_data.data,y_pred) if data_point[0].split("_")[0] == "Positive"]
+neg_outputs = [f">{data_point[0]}\n{int(prediction)}" for data_point,prediction in zip(test_data.data,y_pred) if data_point[0].split("_")[0] == "Negative"]
+
+with open("predictions_pos.txt","w") as f0:
+    f0.write("\n".join(pos_outputs))
+    
+with open("predictions_neg.txt","w") as f0:
+    f0.write("\n".join(neg_outputs))
+
+print(f"Generated Outputs at predictions_pos.txt and predictions_neg")
+print("\n\n")
