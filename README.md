@@ -16,3 +16,6 @@ Each encoding and the several combinations are tested to ensure the best possibl
 After the base classification choice an ensemble of models were made to improve the accuracy further.
 
 ## Hyperparameter Tuning.
+
+An extensive hyperparameter tuning was conducted on the base classifiers to check their improvement.
+![hyperparameters](docs/images/hyperparaeters.png)
