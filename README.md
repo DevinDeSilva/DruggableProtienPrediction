@@ -1,4 +1,6 @@
-# Druggable Protien Prediction [Report](docs/Prediction_of_Durggable_Proteins_Report.pdf)
+# Druggable Protien Prediction 
+
+[Comprehensive Report](docs/Prediction_of_Durggable_Proteins_Report.pdf)
 
 A Druggable Protein is a protein that can interact or attach with drug-like molecules and can result in
 a desired state in medicinal treatments. Therefore, identifying druggable proteins is a huge asset in the
@@ -9,6 +11,10 @@ druggability of a given protein sequence
 
 # Dataset 
 ## Intro
+
+The used dataset is in text format and can be located [here](dataset) we get positive and negative samples seperately
+
+## Preprocessing
 
 | Feature    | Description                                                          | Dimensions |
 |------------|----------------------------------------------------------------------|------------|
@@ -28,9 +34,6 @@ druggability of a given protein sequence
 | RSsecond   | Reduced amino acid Sequences according to secondary structure        | 40         |
 | monoDiKGap | A variant of the Kmer feature extraction method                      | 16000      |
 
-The used dataset is in text format and can be located [here](dataset) we get positive and negative samples seperately
-
-## Preprocessing
 we extract encodings from protien sequences as denoted by [Charoenkwan et al](https://www.sciencedirect.com/science/article/pii/S2589004222011555) and create several feature encodings to test.
 Each encoding and the several combinations are tested to ensure the best possible feature combination. 
 
