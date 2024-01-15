@@ -1,4 +1,11 @@
-# DruggableProtienPrediction
+# Druggable Protien Prediction [Report](docs/Prediction_of_Durggable_Proteins_Report.pdf)
+
+A Druggable Protein is a protein that can interact or attach with drug-like molecules and can result in
+a desired state in medicinal treatments. Therefore, identifying druggable proteins is a huge asset in the
+drug industry. But just plainly identifying them using traditional experiments is costly and
+time-consuming. Therefore, it is proposed to determine different features of druggable proteins that
+can help identify them and then, develop machine learning models using these features to predict the
+druggability of a given protein sequence
 
 # Dataset 
 
